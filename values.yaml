@@ -68,7 +68,7 @@ image:
   pullPolicy: Always
 
 nginx:
-  enabled: true
+  enabled: false
   config: |
     server {
       {{- if .Values.debug }}
@@ -115,9 +115,9 @@ service:
 imagePullSecrets:
   enabled: false
   name:
-
+        
 ingress:
-  enabled: true
+  enabled: false
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/enable-cors: "true"
