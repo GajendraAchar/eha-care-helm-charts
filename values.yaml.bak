@@ -103,7 +103,7 @@ securityContext: {}
 
 service:
   name: eha-care
-  type: ClusterIP
+  type: Ingress
   port: 80
 
 ingress:

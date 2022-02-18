@@ -32,7 +32,6 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                type: Ingress
                 name: {{ $serviceName }}
                 port:
                   number: {{ $servicePort }}
