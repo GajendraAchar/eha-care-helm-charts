@@ -30,7 +30,9 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: eha-care
-              servicePort: 80
+              service:
+                name: {{ $serviceName }}
+                port:
+                  number: {{ $servicePort }}
     {{- end -}}
 {{ end }}
