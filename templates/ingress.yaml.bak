@@ -31,8 +31,8 @@ spec:
           - path: /
             backend:
               service:
-                name: {{ $fullName }}
+                name: {{ $serviceName }}
                 port:
-                  number: {{ $svcPort }}
+                  number: {{ $servicePort }}
     {{- end -}}
 {{ end }}
