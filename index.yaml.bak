@@ -9,6 +9,6 @@ entries:
     name: eha-care
     type: application
     urls:
-    - https://gajendraachar.github.io/eha-care-helm-charts/charts/eha-care-0.1.0.tgz
+    - https://gajendraachar.github.io/eha-care-helm-charts/
     version: 0.1.0
 generated: "2022-02-16T15:48:10.8740177+05:30"
