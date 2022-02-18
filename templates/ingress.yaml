@@ -1,5 +1,5 @@
 {{ if .Values.ingress.enabled }}
-{{- $serviceName := include "service.name" . -}}
+{{- $serviceName := include ".Values.service.name" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
