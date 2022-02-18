@@ -33,7 +33,7 @@ spec:
     {{ end }}
   rules:
     {{- range $host := .Values.ingress.hosts }}
-    - host: chart-example.local
+    - host: dev-emr.eha.ng
       http:
         paths:
           - path: /
