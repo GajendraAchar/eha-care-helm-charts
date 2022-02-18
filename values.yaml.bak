@@ -134,7 +134,7 @@ ingress:
   #hosts:
   #  - dev-emr.eha.ng
   hosts:
-    - host: chart-example.local
+    - host: dev-emr.eha.ng
       paths:
         - path: /
           pathType: ImplementationSpecific
