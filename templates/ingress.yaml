@@ -33,10 +33,10 @@ spec:
     {{ end }}
   rules:
     {{- range $host := .Values.ingress.hosts }}
-    - host: {{ $host }}
+    - host: dev-emr.eha.ng
       http:
         paths:
-          - path: [a-zA-Z]+-[a-zA-Z]+-[a-zA-Z]+\.[a-zA-Z]+ 
+          - path: /
             pathType: ImplementationSpecific
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}

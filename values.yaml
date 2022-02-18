@@ -136,7 +136,7 @@ ingress:
   hosts:
     - host: dev-emr.eha.ng
       paths:
-        - path: [a-zA-Z]+-[a-zA-Z]+-[a-zA-Z]+\.[a-zA-Z]+
+        - path: /
           pathType: ImplementationSpecific
   ssl:
     letsencrypt: true
