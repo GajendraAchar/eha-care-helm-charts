@@ -108,7 +108,7 @@ nginx:
     }
 
 service:
-  type: NodePort
+  type: Ingress
   externalPort:
   internalPort:
 
