@@ -130,9 +130,14 @@ ingress:
     cert-manager.io/acme-challenge-type: dns01
     cert-manager.io/acme-dns01-provider: route53
 
-  path: /
+  #path: /
+  #hosts:
+  #  - dev-emr.eha.ng
   hosts:
-    - dev-emr.eha.ng
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
   ssl:
     letsencrypt: true
     cert_secret: wildcard
