@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 2
+replicaCount: 1	
 
 image:
   repository: nginx
@@ -31,7 +31,7 @@ ingress:
     statuscake.monitor.stakater.com/contact-group: DevOps
   enabled: false
   hosts:
-  - chart-example.local
+  - eha-care
   path: /
   ssl:
     cert_secret: wildcard
