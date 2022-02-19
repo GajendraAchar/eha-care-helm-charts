@@ -32,7 +32,7 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: eha-care
+                name: {{ $serviceName }}
                 port:
                   number: {{ $servicePort }}
     {{- end -}}

@@ -9,7 +9,7 @@ metadata:
     io.kompose.service: eha-care
   name: eha-care
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - name: "3000"
       port: 3000
