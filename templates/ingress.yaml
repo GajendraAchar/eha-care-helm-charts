@@ -1,5 +1,5 @@
 {{ if .Values.ingress.enabled }}
-{{- $serviceName := include "eha-care.fullname" . -}}
+{{- $serviceName := include "eha-care" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
