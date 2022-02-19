@@ -101,8 +101,8 @@ spec:
         {{ if .Values.nginx.enabled }}
         - name: nginx
           image: nginx:stable-alpine
-          resources:
-{{ toYaml .Values.sidecar.resources  | indent 12 }}
+          #resources:
+#{{ toYaml .Values.sidecar.resources  | indent 12 }}
           ports:
           - containerPort: 80
           volumeMounts:
@@ -112,7 +112,7 @@ spec:
             name: nginx-config
           {{ if and .Values.app.volume.enabled .Values.nginx.enabled }}
           - mountPath: {{ .Values.app.volume.mountPath }}
-            name: {{ template "generic.name" . }}-data
+            name: {{ template "eha-care.name" . }}-data
           {{ end }}
         {{ end }}
       

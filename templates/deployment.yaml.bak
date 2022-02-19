@@ -32,56 +32,89 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-      
         - name: {{ .Values.app.name }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        resources:
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          resources:
 {{ toYaml .Values.app.resources | indent 12 }}
-        args:
-          {{- range .Values.app.args }}
-          - {{ . | quote }}
-          {{- end }}
-        ports:
-        - name: app
-          containerPort: {{ .Values.app.port }}
-          protocol: TCP
-        {{ if eq .Values.app.probe.type "request" }}
+          args:
+            {{- range .Values.app.args }}
+            - {{ . | quote }}
+            {{- end }}
+          ports:
+          - name: app
+            containerPort: {{ .Values.app.port }}
+            protocol: TCP
+          {{ if eq .Values.app.probe.type "request" }}
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.app.probe.path }}
+              port: app
+              httpHeaders:
+              - name: X-Kubernetes-Health-Check
+                value: livenessProbe
+            initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.app.probe.periodSeconds }}
+            timeoutSeconds: {{ .Values.app.probe.timeoutSeconds }}
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.app.probe.path }}
+              port: app
+              httpHeaders:
+              - name: X-Kubernetes-Health-Check
+                value: readinessProbe
+              - name: Host
+                value: {{ .Values.url }}
+            initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.app.probe.periodSeconds }}
+            timeoutSeconds: {{ .Values.app.probe.timeoutSeconds }}
+          {{ end }}
+          {{ if eq .Values.app.probe.type "tcp" }}
         livenessProbe:
-          httpGet:
-            path: {{ .Values.app.probe.path }}
+          tcpSocket:
             port: app
-            httpHeaders:
-            - name: X-Kubernetes-Health-Check
-              value: livenessProbe
           initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
           periodSeconds: {{ .Values.app.probe.periodSeconds }}
-          timeoutSeconds: {{ .Values.app.probe.timeoutSeconds }}
         readinessProbe:
-          httpGet:
-            path: {{ .Values.app.probe.path }}
+          tcpSocket:
             port: app
-            httpHeaders:
-            - name: X-Kubernetes-Health-Check
-              value: readinessProbe
-            - name: Host
-              value: {{ .Values.url }}
           initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
           periodSeconds: {{ .Values.app.probe.periodSeconds }}
-          timeoutSeconds: {{ .Values.app.probe.timeoutSeconds }}
+        {{ end }}
+        {{ if eq .Values.app.probe.type "exec" }}
+        livenessProbe:
+          initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.app.probe.periodSeconds }}
+          exec:
+            command: ['bash', '-c', '{{ .Values.app.probe.path }}/{{ .Values.app.probe.livenessProbeScriptName }}', '{{ .Values.app.probe.timeout }}']
+        readinessProbe:
+          initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.app.probe.periodSeconds }}
+          exec:
+            command: ['bash', '-c', '{{ .Values.app.probe.path }}/{{ .Values.app.probe.readinessProbeScriptName }}', '{{ .Values.app.probe.timeout }}']
         {{ end }}
         
 
         
         
 
-      {{ if .Values.nginx.enabled }}
-      - name: nginx
-        image: nginx:stable-alpine
-        resources:
-{{ toYaml .Values.sidecar.resources  | indent 12 }}
-        ports:
-        - containerPort: 80
+        {{ if .Values.nginx.enabled }}
+        - name: nginx
+          image: nginx:stable-alpine
+          #resources:
+#{{ toYaml .Values.sidecar.resources  | indent 12 }}
+          ports:
+          - containerPort: 80
+          volumeMounts:
+          - mountPath: {{ .Values.app.static_root }}
+            name: static-assets-volume
+          - mountPath: /etc/nginx/conf.d
+            name: nginx-config
+          {{ if and .Values.app.volume.enabled .Values.nginx.enabled }}
+          - mountPath: {{ .Values.app.volume.mountPath }}
+            name: {{ template "generic.name" . }}-data
+          {{ end }}
+        {{ end }}
       
       
       
