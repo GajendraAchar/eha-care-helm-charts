@@ -116,6 +116,7 @@ ingress:
     cert_secret: wildcard
     letsencrypt: true
 nameOverride: null
+
 nginx:
   config: |
     server {
@@ -184,9 +185,12 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
+  externalPort: null
+  internalPort: null
+  type: NodePort
   name: eha-care
-  type: Ingress
-  port: 80
+  #type: Ingress
+  #port: 80
 
 #ingress:
 #  enabled: false

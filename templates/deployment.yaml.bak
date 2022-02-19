@@ -6,13 +6,19 @@ metadata:
     kompose.version: 1.26.1 (a9d05d509)
   creationTimestamp: null
   labels:
+    app: {{ template "eha-care.name" . }}
+    chart: {{ template "eha-care.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     io.kompose.service: eha-care
-  name: eha-care
+  name: {{ template "eha-care.fullname" . }}
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       io.kompose.service: eha-care
+      app: {{ template "eha-care.name" . }}
+      release: {{ .Release.Name }}
   strategy: {}
   template:
     metadata:
@@ -22,8 +28,63 @@ spec:
       creationTimestamp: null
       labels:
         io.kompose.service: eha-care
+        app: {{ template "eha-care.name" . }}
+        release: {{ .Release.Name }}
     spec:
       containers:
+      
+        - name: {{ .Values.app.name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.app.resources | indent 12 }}
+        args:
+          {{- range .Values.app.args }}
+          - {{ . | quote }}
+          {{- end }}
+        ports:
+        - name: app
+          containerPort: {{ .Values.app.port }}
+          protocol: TCP
+        {{ if eq .Values.app.probe.type "request" }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.app.probe.path }}
+            port: app
+            httpHeaders:
+            - name: X-Kubernetes-Health-Check
+              value: livenessProbe
+          initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.app.probe.periodSeconds }}
+          timeoutSeconds: {{ .Values.app.probe.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.app.probe.path }}
+            port: app
+            httpHeaders:
+            - name: X-Kubernetes-Health-Check
+              value: readinessProbe
+            - name: Host
+              value: {{ .Values.url }}
+          initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.app.probe.periodSeconds }}
+          timeoutSeconds: {{ .Values.app.probe.timeoutSeconds }}
+        {{ end }}
+        
+
+        
+        
+
+      {{ if .Values.nginx.enabled }}
+      - name: nginx
+        image: nginx:stable-alpine
+        resources:
+{{ toYaml .Values.sidecar.resources  | indent 12 }}
+        ports:
+        - containerPort: 80
+      
+      
+      
         - image: eu.gcr.io/development-223016/eha_care
           name: eha-care
           ports:

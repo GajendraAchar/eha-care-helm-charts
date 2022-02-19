@@ -6,15 +6,22 @@ metadata:
     kompose.version: 1.26.1 (a9d05d509)
   creationTimestamp: null
   labels:
+  app: {{ template "eha-care.name" . }}
+    chart: {{ template "eha-care.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     io.kompose.service: eha-care
-  name: eha-care
+  name: {{ template "eha-care.fullname" . }}
 spec:
-  type: NodePort
+  type: {{ .Values.service.type }}
   ports:
-    - name: "3000"
-      port: 3000
-      targetPort: 3000
+    - name: {{ .Values.service.name }}
+      port: {{ .Values.service.externalPort }}
+      targetPort: {{ .Values.service.internalPort }}
+      protocol: TCP
   selector:
+    app: {{ template "eha-care.name" . }}
+    release: {{ .Release.Name }}
     io.kompose.service: eha-care
 status:
   loadBalancer: {}
