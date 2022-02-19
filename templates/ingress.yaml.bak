@@ -4,12 +4,13 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: eha-care
+  name: {{ template "eha-care.fullname" . }}
   labels:
-    app: eha-care
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
+    {{- include "eha-care.labels" . | nindent 4 }}
+  {{- with .Values.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
   annotations:
     {{- range $key, $value := .Values.ingress.annotations }}
       {{ $key }}: {{ $value | quote }}
@@ -32,8 +33,10 @@ spec:
             pathType: ImplementationSpecific
             backend:
               service:
-                name: eha-care
+                name: {{ $serviceName }}
                 port:
                   number: {{ $servicePort }}
-    {{- end -}}
-{{ end }}
+              {{- end }}
+          {{- end }}
+    {{- end }}
+{{- end }}

@@ -15,6 +15,85 @@ nameOverride: ""
 fullnameOverride: ""
 
 
+app:
+  args: []
+  config:
+    enabled: false
+  db:
+    create: false
+    enabled: false
+    host: 127.0.0.1
+    init: |
+      # check to see if database exists
+      db_exists=$(psql -t -c "select count(*) from pg_catalog.pg_database where datname='$DB_NAME'")
+      # check to see if user exists
+      user_exists=$(psql -t -c "select count(*) from pg_catalog.pg_roles where rolname='$DB_USERNAME'")
+      if [ $db_exists -eq 0 ]; then
+          psql -c "CREATE DATABASE $DB_NAME;"
+      fi
+      if [ $user_exists -eq 0 ]; then
+        psql -c "CREATE USER $DB_USERNAME WITH PASSWORD '$DB_PASSWORD';"
+      fi
+      psql -c "GRANT $DB_USERNAME TO $PGUSER;"
+      psql -c "GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USERNAME;"
+      psql -c "ALTER DATABASE $DB_NAME OWNER TO $DB_USERNAME;"
+      echo "sql executed.."
+      # create database extensions
+      {{ if .Values.app.db.extensions }}
+      {{- range .Values.app.db.extensions }}
+      echo "creating Postgres database extensions"
+      psql -d $DB_NAME -c 'CREATE EXTENSION IF NOT EXISTS {{ . | quote }} ;'
+      {{- end }}
+      {{ end }}
+    name: null
+    port: 5432
+    secret: database-credentials
+    ssl:
+      enabled: false
+    type: postgres
+    user: null
+  extraVolumeMounts: ""
+  minAvailable: 1
+  name: null
+  port: null
+  probe:
+    initialDelaySeconds: 120
+    path: /health
+    periodSeconds: 10
+    type: request
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512M
+    requests:
+      cpu: 250m
+      memory: 256M
+  scaling:
+    enabled: true
+    max: 5
+    min: 2
+    utilization:
+      cpu: 70
+      memory: 70
+  secret: null
+  static_path: /static
+  static_root: /var/www/static
+  storage:
+    bucket:
+      credentialsSecret: null
+  volume:
+    accessMode: ReadWriteOnce
+    enabled: false
+    mountPath: null
+    nfs:
+      path: null
+      server: null
+    persist: false
+    size: 10Gi
+    type: standard
+
+
+
 
 
 ingress:

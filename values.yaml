@@ -110,7 +110,7 @@ ingress:
     statuscake.monitor.stakater.com/contact-group: DevOps
   enabled: false
   hosts:
-  - eha-care
+  - chart-example.local
   path: /
   ssl:
     cert_secret: wildcard
