@@ -23,8 +23,8 @@ spec:
       protocol: TCP
   selector:
     {{- include "eha-care.selectorLabels" . | nindent 4 }}
-    app: {{ template "eha-care.name" . }}
-    release: {{ .Release.Name }}
-    io.kompose.service: eha-care
+    #app: {{ template "eha-care.name" . }}
+    #release: {{ .Release.Name }}
+    #io.kompose.service: eha-care
 #status:
 #  loadBalancer: {}
