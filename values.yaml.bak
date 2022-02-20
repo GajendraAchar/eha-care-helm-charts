@@ -188,7 +188,7 @@ service:
   externalPort: 80
   internalPort: 80
   type: NodePort
-  name: eha-care
+  #name: eha-care
   #type: Ingress
   #port: 80
 
