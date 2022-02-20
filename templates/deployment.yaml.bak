@@ -70,29 +70,29 @@ spec:
             timeoutSeconds: {{ .Values.app.probe.timeoutSeconds }}
           {{ end }}
           {{ if eq .Values.app.probe.type "tcp" }}
-        livenessProbe:
-          tcpSocket:
-            port: app
-          initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.app.probe.periodSeconds }}
-        readinessProbe:
-          tcpSocket:
-            port: app
-          initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.app.probe.periodSeconds }}
-        {{ end }}
-        {{ if eq .Values.app.probe.type "exec" }}
-        livenessProbe:
-          initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.app.probe.periodSeconds }}
-          exec:
-            command: ['bash', '-c', '{{ .Values.app.probe.path }}/{{ .Values.app.probe.livenessProbeScriptName }}', '{{ .Values.app.probe.timeout }}']
-        readinessProbe:
-          initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.app.probe.periodSeconds }}
-          exec:
-            command: ['bash', '-c', '{{ .Values.app.probe.path }}/{{ .Values.app.probe.readinessProbeScriptName }}', '{{ .Values.app.probe.timeout }}']
-        {{ end }}
+          livenessProbe:
+            tcpSocket:
+              port: app
+            initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.app.probe.periodSeconds }}
+          readinessProbe:
+            tcpSocket:
+              port: app
+            initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.app.probe.periodSeconds }}
+          {{ end }}
+          {{ if eq .Values.app.probe.type "exec" }}
+          livenessProbe:
+            initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.app.probe.periodSeconds }}
+            exec:
+              command: ['bash', '-c', '{{ .Values.app.probe.path }}/{{ .Values.app.probe.livenessProbeScriptName }}', '{{ .Values.app.probe.timeout }}']
+          readinessProbe:
+            initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.app.probe.periodSeconds }}
+            exec:
+              command: ['bash', '-c', '{{ .Values.app.probe.path }}/{{ .Values.app.probe.readinessProbeScriptName }}', '{{ .Values.app.probe.timeout }}']
+          {{ end }}
         
 
         
@@ -101,19 +101,17 @@ spec:
         {{ if .Values.nginx.enabled }}
         - name: nginx
           image: nginx:stable-alpine
-          #resources:
-#{{ toYaml .Values.sidecar.resources  | indent 12 }}
           ports:
           - containerPort: 80
-          volumeMounts:
-          - mountPath: {{ .Values.app.static_root }}
-            name: static-assets-volume
-          - mountPath: /etc/nginx/conf.d
-            name: nginx-config
-          {{ if and .Values.app.volume.enabled .Values.nginx.enabled }}
-          - mountPath: {{ .Values.app.volume.mountPath }}
-            name: {{ template "eha-care.name" . }}-data
-          {{ end }}
+          #volumeMounts:
+          #- mountPath: {{ .Values.app.static_root }}
+          #  name: static-assets-volume
+          #- mountPath: /etc/nginx/conf.d
+          #  name: nginx-config
+          #{{ if and .Values.app.volume.enabled .Values.nginx.enabled }}
+          #- mountPath: {{ .Values.app.volume.mountPath }}
+          #  name: {{ template "eha-care.name" . }}-data
+          #s{{ end }}
         {{ end }}
       
       
