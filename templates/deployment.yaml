@@ -16,10 +16,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      {{- include "eha-care.selectorLabels" . | nindent 6 }}
-      #io.kompose.service: eha-care
-      #app: {{ template "eha-care.name" . }}
-      #release: {{ .Release.Name }}
+      io.kompose.service: eha-care
   strategy: {}
   template:
     metadata:
@@ -28,8 +25,8 @@ spec:
         kompose.version: 1.26.1 (a9d05d509)
       creationTimestamp: null
       labels:
-        {{- include "eha-care.selectorLabels" . | nindent 8 }}
-        #io.kompose.service: eha-care
+        #{{- include "eha-care.selectorLabels" . | nindent 8 }}
+        io.kompose.service: eha-care
         #app: {{ template "eha-care.name" . }}
         #release: {{ .Release.Name }}
     spec:
