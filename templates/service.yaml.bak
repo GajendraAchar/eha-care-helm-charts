@@ -9,6 +9,7 @@ metadata:
     io.kompose.service: eha-care
   name: eha-care
 spec:
+  type: {{ .Values.service.type }}
   ports:
     - name: {{ .Values.service.name }}
       port: {{ .Values.service.externalPort }}
