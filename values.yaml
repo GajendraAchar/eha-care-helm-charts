@@ -185,8 +185,8 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  externalPort: null
-  internalPort: null
+  externalPort: 80
+  internalPort: 80
   type: NodePort
   name: eha-care
   #type: Ingress

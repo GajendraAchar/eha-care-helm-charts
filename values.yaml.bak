@@ -116,6 +116,7 @@ ingress:
     cert_secret: wildcard
     letsencrypt: true
 nameOverride: null
+
 nginx:
   config: |
     server {

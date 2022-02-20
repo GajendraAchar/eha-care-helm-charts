@@ -1,30 +1,19 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "eha-care.fullname" . }}
   annotations:
     kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert -f .\docker-compose.yml
     kompose.version: 1.26.1 (a9d05d509)
-  #creationTimestamp: null
+  creationTimestamp: null
   labels:
-    {{- include "eha-care.labels" . | nindent 4 }}
-    #app: {{ template "eha-care.name" . }}
-    #chart: {{ template "eha-care.chart" . }}
-    #release: {{ .Release.Name }}
-    #heritage: {{ .Release.Service }}
-    #io.kompose.service: eha-care
-  #name: {{ template "eha-care.fullname" . }}
+    io.kompose.service: eha-care
+  name: eha-care
 spec:
-  type: {{ .Values.service.type }}
   ports:
     - name: {{ .Values.service.name }}
       port: {{ .Values.service.externalPort }}
       targetPort: {{ .Values.service.internalPort }}
-      protocol: TCP
   selector:
-    {{- include "eha-care.selectorLabels" . | nindent 4 }}
-    #app: {{ template "eha-care.name" . }}
-    #release: {{ .Release.Name }}
-    #io.kompose.service: eha-care
-#status:
-#  loadBalancer: {}
+    io.kompose.service: eha-care
+status:
+  loadBalancer: {}
