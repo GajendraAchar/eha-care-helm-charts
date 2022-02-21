@@ -91,10 +91,25 @@ app:
     persist: false
     size: 10Gi
     type: standard
-
-
-
-
+database:
+  instance: null
+env_secrets:
+  enabled: false
+  name: null
+extra_env_vars: {}
+extra_env_vars_secretKeyRef: {}
+extraContainers: ""
+extraInitContainers: ""
+extraVolumes: ""
+fullnameOverride: null
+gcp: true
+image:
+  pullPolicy: IfNotPresent
+  repository: null
+  tag: null
+imagePullSecrets:
+  enabled: false
+  name: null
 
 ingress:
   annotations:
@@ -185,8 +200,8 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  externalPort: 3000
-  internalPort: 3000
+  externalPort: null
+  internalPort: null
   type: NodePort
   #name: eha-care
   #type: Ingress

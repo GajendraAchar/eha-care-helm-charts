@@ -12,8 +12,8 @@ spec:
   type: {{ .Values.service.type }}
   ports:
     - name: {{ .Values.service.name }}
-      port: 3000
-      targetPort: 3000
+      port: {{ .Values.service.externalPort }}
+      targetPort: {{ .Values.service.internalPort }}
   selector:
     io.kompose.service: eha-care
 status:
