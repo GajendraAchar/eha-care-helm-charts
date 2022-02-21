@@ -24,21 +24,20 @@ spec:
         io.kompose.service: eha-care
     spec:
       containers:
-      
-        - name: {{ .Values.app.name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-{{ toYaml .Values.app.resources | indent 12 }}
-          args:
-            {{- range .Values.app.args }}
-            - {{ . | quote }}
-            {{- end }}
+        
+        
+        - image: eu.gcr.io/development-223016/eha_care
+          name: eha-care
           ports:
-          - name: app
-            containerPort: {{ .Values.app.port }}
-            protocol: TCP
-          
+            - containerPort: 3000
+          resources: {}
+          tty: true
+        volumeMounts:
+          - mountPath: {{ .Values.app.static_root }}
+            name: static-assets-volume
+          - mountPath: /etc/nginx/conf.d
+            name: nginx-config
+               
           
         {{ if .Values.nginx.enabled }}
         - name: nginx
@@ -51,12 +50,14 @@ spec:
         {{ end }} 
       
         
-        - image: eu.gcr.io/development-223016/eha_care
-          name: eha-care
-          ports:
-            - containerPort: 3000
-          resources: {}
-          tty: true
+      volumes:
+        {{ if .Values.nginx.enabled }}
+        - name: static-assets-volume
+          emptyDir: {}
+        - name: nginx-config
+          configMap:
+            name: {{ template "generic.fullname" . }}-nginx-config
+        {{ end }} 
           #imagePullPolicy: Always
       restartPolicy: Always
 status: {}
