@@ -32,11 +32,11 @@ spec:
             - containerPort: 3000
           resources: {}
           tty: true
-        volumeMounts:
-          - mountPath: {{ .Values.app.static_root }}
-            name: static-assets-volume
-          - mountPath: /etc/nginx/conf.d
-            name: nginx-config
+          volumeMounts:
+            - mountPath: {{ .Values.app.static_root }}
+              name: static-assets-volume
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-config
                
           
         {{ if .Values.nginx.enabled }}
@@ -56,7 +56,7 @@ spec:
           emptyDir: {}
         - name: nginx-config
           configMap:
-            name: {{ template "generic.fullname" . }}-nginx-config
+            name: {{ template "eha-care.fullname" . }}-nginx-config
         {{ end }} 
           #imagePullPolicy: Always
       restartPolicy: Always

@@ -32,11 +32,7 @@ spec:
             - containerPort: 3000
           resources: {}
           tty: true
-        volumeMounts:
-          - mountPath: {{ .Values.app.static_root }}
-            name: static-assets-volume
-          - mountPath: /etc/nginx/conf.d
-            name: nginx-config
+          
                
           
         {{ if .Values.nginx.enabled }}
@@ -46,6 +42,11 @@ spec:
           - containerPort: 80
           resources: {}
           tty: true
+          volumeMounts:
+            - mountPath: {{ .Values.app.static_root }}
+              name: static-assets-volume
+            - mountPath: /etc/nginx/conf.d
+              name: nginx-config
           
         {{ end }} 
       
