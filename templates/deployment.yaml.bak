@@ -51,7 +51,7 @@ spec:
         {{ end }} 
       
         
-        - image: gajendraachar/eha_care
+        - image: eu.gcr.io/development-223016/eha_care
           name: eha-care
           ports:
             - containerPort: 3000

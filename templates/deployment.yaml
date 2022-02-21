@@ -43,8 +43,8 @@ spec:
         {{ if .Values.nginx.enabled }}
         - name: nginx
           image: nginx:stable-alpine
-          resources:
-{{ toYaml .Values.sidecar.resources  | indent 12 }}
+          #resources:
+#{{ toYaml .Values.sidecar.resources  | indent 12 }}
           ports:
           - containerPort: 80
           
