@@ -6,12 +6,8 @@ metadata:
     kompose.version: 1.26.1 (a9d05d509)
   creationTimestamp: null
   labels:
-    app: {{ template "eha-care.name" . }}
-    chart: {{ template "eha-care.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
     io.kompose.service: eha-care
-  name: {{ template "eha-care.fullname" . }}
+  name: eha-care
 spec:
   replicas: 1
   selector:
@@ -25,96 +21,9 @@ spec:
         kompose.version: 1.26.1 (a9d05d509)
       creationTimestamp: null
       labels:
-        #{{- include "eha-care.selectorLabels" . | nindent 8 }}
         io.kompose.service: eha-care
-        #app: {{ template "eha-care.name" . }}
-        #release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ .Values.app.name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          resources:
-{{ toYaml .Values.app.resources | indent 12 }}
-          args:
-            {{- range .Values.app.args }}
-            - {{ . | quote }}
-            {{- end }}
-          ports:
-          - name: app
-            containerPort: {{ .Values.app.port }}
-            protocol: TCP
-          {{ if eq .Values.app.probe.type "request" }}
-          livenessProbe:
-            httpGet:
-              path: {{ .Values.app.probe.path }}
-              port: app
-              httpHeaders:
-              - name: X-Kubernetes-Health-Check
-                value: livenessProbe
-            initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.app.probe.periodSeconds }}
-            timeoutSeconds: {{ .Values.app.probe.timeoutSeconds }}
-          readinessProbe:
-            httpGet:
-              path: {{ .Values.app.probe.path }}
-              port: app
-              httpHeaders:
-              - name: X-Kubernetes-Health-Check
-                value: readinessProbe
-              - name: Host
-                value: {{ .Values.url }}
-            initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.app.probe.periodSeconds }}
-            timeoutSeconds: {{ .Values.app.probe.timeoutSeconds }}
-          {{ end }}
-          {{ if eq .Values.app.probe.type "tcp" }}
-          livenessProbe:
-            tcpSocket:
-              port: app
-            initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.app.probe.periodSeconds }}
-          readinessProbe:
-            tcpSocket:
-              port: app
-            initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.app.probe.periodSeconds }}
-          {{ end }}
-          {{ if eq .Values.app.probe.type "exec" }}
-          livenessProbe:
-            initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.app.probe.periodSeconds }}
-            exec:
-              command: ['bash', '-c', '{{ .Values.app.probe.path }}/{{ .Values.app.probe.livenessProbeScriptName }}', '{{ .Values.app.probe.timeout }}']
-          readinessProbe:
-            initialDelaySeconds: {{ .Values.app.probe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.app.probe.periodSeconds }}
-            exec:
-              command: ['bash', '-c', '{{ .Values.app.probe.path }}/{{ .Values.app.probe.readinessProbeScriptName }}', '{{ .Values.app.probe.timeout }}']
-          {{ end }}
-        
-
-        
-        
-
-        {{ if .Values.nginx.enabled }}
-        - name: nginx
-          image: nginx:stable-alpine
-          ports:
-          - containerPort: 80
-          #volumeMounts:
-          #- mountPath: {{ .Values.app.static_root }}
-          #  name: static-assets-volume
-          #- mountPath: /etc/nginx/conf.d
-          #  name: nginx-config
-          #{{ if and .Values.app.volume.enabled .Values.nginx.enabled }}
-          #- mountPath: {{ .Values.app.volume.mountPath }}
-          #  name: {{ template "eha-care.name" . }}-data
-          #{{ end }}
-        {{ end }}
-      
-      
-      
         - image: eu.gcr.io/development-223016/eha_care
           name: eha-care
           ports:
