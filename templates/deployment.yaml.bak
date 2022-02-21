@@ -46,6 +46,7 @@ spec:
           ports:
           - containerPort: 80
           resources: {}
+          tty: true
           
         {{ end }} 
       
