@@ -158,4 +158,4 @@ spec:
       {{ end }}
       
       restartPolicy: Always
-#{{ end }}
+status: {}
